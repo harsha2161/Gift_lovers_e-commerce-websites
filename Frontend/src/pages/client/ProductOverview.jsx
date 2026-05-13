@@ -54,7 +54,7 @@ export default function ProductOverviewPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white">
       
-      {/* Breadcrumbs - simple version */}
+    
       <nav className="text-sm font-medium text-gray-500 mb-8 flex items-center gap-2">
         <button onClick={() => navigate("/")} className="hover:text-emerald-600 transition-colors">Home</button>
         <span>/</span>
@@ -150,7 +150,7 @@ export default function ProductOverviewPage() {
               <FaBolt className="text-xl" />
               Buy Now
             </button>
-            
+
           </div>
 
           {/* Trust Features */}
