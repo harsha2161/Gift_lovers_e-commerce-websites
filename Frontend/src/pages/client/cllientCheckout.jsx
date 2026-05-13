@@ -8,8 +8,11 @@ import { getCart, removeFromCart, addCart, clearCart, getTotle } from "../../uti
 export default function ClientCheckout() {
     const [address, setAddress] = useState("");
     const [number, setNumber] = useState("");
+    const location = useLocation();
     const navigate = useNavigate();
-    const [cart, setCart] = useState(getCart());
+    
+    // Get cart data from Product Overview (Buy Now) or fallback to global Cart
+    const [cart, setCart] = useState(location.state?.cart || getCart());
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
     async function placeOrder() {
