@@ -52,28 +52,6 @@ export default function ClientCheckout() {
         }
     }
 
-    // Empty State
-    if (cart.length === 0) {
-        return (
-            <div className="min-h-[70vh] w-full flex flex-col justify-center items-center bg-gray-50 px-4">
-                
-                <div className="bg-white p-8 rounded-full shadow-sm mb-6">
-                    <FaLock className="text-6xl text-gray-300" />
-                </div>
-
-                <h2 className="text-3xl font-black text-gray-800 mb-2">No items to checkout</h2>
-                
-                <p className="text-gray-500 mb-8 text-center max-w-md">
-                    You don't have any items to purchase. Head back to the store to find something you'll love!
-                </p>
-
-                <button onClick={() => navigate("/products")}
-                className="flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-full font-bold hover:bg-emerald-700 transition-all">
-                <FaArrowLeft />Back to Products
-                </button>
-            </div>
-        )
-    }
 
     return (
 
