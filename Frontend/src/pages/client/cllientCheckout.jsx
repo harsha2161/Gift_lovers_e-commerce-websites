@@ -1,187 +1,224 @@
-import { useState } from "react"
-import { FaTrashAlt } from "react-icons/fa"
-import { useLocation } from "react-router-dom"
+import { useState } from "react";
+import { FaTrashAlt, FaLock, FaArrowLeft, FaMapMarkerAlt, FaPhoneAlt, FaMinus, FaPlus } from "react-icons/fa";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { getCart, removeFromCart, addCart, clearCart, getTotle } from "../../utils/cart.js";
 
+export default function ClientCheckout() {
+    const [address, setAddress] = useState("");
+    const [number, setNumber] = useState("");
+    const navigate = useNavigate();
+    const [cart, setCart] = useState(getCart());
+    const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
-export default function ClientCart(){
-
-    const [address, setAddress] = useState();
-    const [number, SetNumber] = useState();
-    
-    const location = useLocation()
-    const [cart, setCart] = useState(location.state?.cart || [])
-
-    function gettotle(){
-        let totle = 0
-        cart.forEach(item => {
-            totle += item.lablePrice * item.qty
-        })
-        return totle
-    }
-
-    function removeFromCart(index) {
-        const newCart = cart.filter(
-            (item,i) => i != index
-        )
-        setCart(newCart)
-    }
-
-    function changQty(index, qty){
-        const newQty = cart[index].qty + qty;
-        if(newQty <= 0){
-            removeFromCart(index)
-            return
-        }else{
-
-            cart[index].qty = newQty
-            const newCart = [...cart];
-            setCart(newCart)
+    async function placeOrder() {
+        if (address == null || number == null) {
+            toast.error("Please fill in your shipping details.");
+            return;
         }
-    }
 
-    async function placeOrder(){
-
-        const token = localStorage.getItem("token")
-        if(!token) {
-            toast.error("pleace login to place order")
-            return
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please login to place order.");
+            return;
         }
+
+        setIsPlacingOrder(true);
 
         const orderInfo = {
-            orderProducts : [],
-            phone : number,
-            address : address,
+            orderProducts: cart.map(item => ({
+                productId: item.productId,
+                quantity: item.qty
+            })),
+            phone: number,
+            address: address,
+        };
+
+        try {
+            await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/order", orderInfo, {
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            });
+            clearCart();
+            toast.success("Order placed successfully!");
+            navigate("/"); // Redirect to home on success
+        } catch (err) {
+            console.error(err);
+            toast.error("Error placing order. Please try again.");
+        } finally {
+            setIsPlacingOrder(false);
         }
-
-        for(let i=0; i<cart.length; i++){
-            const item = {
-                productId : cart[i].productId,
-                quantity : cart[i].qty,
-            }
-            orderInfo.orderProducts[i] = item
-        }
-       
-
-        try{
-
-            const res = await axios.post(import.meta.env.VITE_BACKEND_URL+"/api/order", orderInfo,{
-            headers : {
-                "Authorization" : "Bearer " + token
-            }
-            
-            })
-                toast.success("Order place Complate")
-            }catch(err){
-                console.log(err)
-              //  toast.error("Error to placing Order")
-                
-                return
-            }
     }
-   
-    return(
-        <div className="w-full h-full flex justify-center items-center flex-row ">
-            <div className="w-[50%] h-full flex-col flex items-center overflow-y-auto">
-            {
-                cart.map(
-                    (item,index) => {
-                        return(
-                            
-                            <div key={item.productId} className="w-[600px] h-[100px] bg-primary shadow-2xl flex flex-row rounded-2xl m-2 flex items-center">
-                                <img src={item.img} alt="pic" className="w-[100px] h-[100px] rounded-2xl ojbect-cover"/>
 
-                                <div className="w-[300px] p-2 flex-col flex  font-bold">
-                                    <h1>{item.productName}</h1>
-                                    <h1>Rs:{item.lablePrice}</h1>
-                                </div>
-                                
-                                <div className="flex justify-center items-center"> 
-                                    <div className="bg-primary w-[120px] h-[45px] rounded-2xl shadow-lg flex items-center justify-between p-2">        
-                                        <button className="w-8 h-8 flex items-center justify-center bg-amber-200 hover:bg-amber-300 rounded-full text-lg font-bold transition" onClick={
-                                            () => {
-                                               changQty(index,1)
-                                            }
-                                        }>+</button>
-                                        <h1 className="text-lg font-semibold ">{item.qty}</h1>
-                                        <button className="w-8 h-8 flex items-center justify-center bg-amber-200 hover:bg-amber-300 rounded-full text-lg font-bold transition" onClick={
-                                            () => {
-                                               changQty(index,-1)
-                                            }
-                                        }>-</button>
-                                    </div>
-                                </div>
-                                
-                                <h1 className="p-8">Price Rs: {item.qty * item.lablePrice}</h1>
-                                <button className=" hover:bg-red-600 rext-white rounded-full p-2" onClick={
-                                    () => {
-                                        removeFromCart(index)
-                                    }
-                                }><FaTrashAlt/></button>  
-
-                            </div>
-                            
-                        )
-                    }
-                )
-            }
-            
-            </div>
-
-          <div className="w-[50%] flex justify-center items-center flex-col">
-                <div className="w-[400px] h-[200px]  m-2 shadow-2xl rounded-xl flex justify-center items-center flex-col">
-                    <input
-                        type="text"
-                        placeholder="Address"
-                        className="w-[350px] h-[55px] border m-2 px-4 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        onChange={
-                            (e) => {
-                                setAddress(e.target.value)
-                            }
-                        }
-                    />
-
-                    <input
-                        type="text"
-                        placeholder="Number"
-                        className="w-[350px] h-[55px]  border m-2 px-4 rounded-lg bg-white/80 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                         onChange={
-                            (e) => {
-                                SetNumber(e.target.value)
-                            }
-                        }
-                       
-                    />
-
-
+    // Empty State
+    if (cart.length === 0) {
+        return (
+            <div className="min-h-[70vh] w-full flex flex-col justify-center items-center bg-gray-50 px-4">
+                
+                <div className="bg-white p-8 rounded-full shadow-sm mb-6">
+                    <FaLock className="text-6xl text-gray-300" />
                 </div>
-            <div className="w-[400px] bg-white shadow-2xl rounded-lg p-6">
-            
-                    <h1 className="text-2xl font-semibold mb-6">Order Summary</h1>
 
-                    <div className="space-y-3 text-gray-600">
-                        <div className="flex justify-between">
-                            <span>Subtotal</span>
-                            <span>Rs.{gettotle().toFixed(2)}</span>
+                <h2 className="text-3xl font-black text-gray-800 mb-2">No items to checkout</h2>
+                
+                <p className="text-gray-500 mb-8 text-center max-w-md">
+                    You don't have any items to purchase. Head back to the store to find something you'll love!
+                </p>
+
+                <button onClick={() => navigate("/products")}
+                className="flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-full font-bold hover:bg-emerald-700 transition-all">
+                <FaArrowLeft />Back to Products
+                </button>
+            </div>
+        )
+    }
+
+    return (
+
+        <div className="min-h-screen w-full bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+                
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-3xl font-black text-gray-900">Checkout</h1>
+                    <p className="text-gray-500 mt-1">Complete your order below</p>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-8">
+                    {/* Left Column: Shipping & Items */}
+                    <div className="flex-1 flex flex-col gap-8">
+
+                        {/* Shipping Form */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <FaMapMarkerAlt className="text-emerald-500" />
+                                Shipping Information
+                            </h2>
+
+                            <div className="space-y-5">
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Delivery Address</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <FaMapMarkerAlt className="text-gray-400" />
+                                        </div>
+                                        <input type="text" placeholder="123 Main St, Apartment 4B" value={address}
+                                        onChange={(e) => setAddress(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 
+                                        text-gray-800 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
+                                    </div>
+
+                                </div>
+
+                                <div>
+
+                                    <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                            <FaPhoneAlt className="text-gray-400" />
+                                        </div>
+                                        <input type="tel" placeholder="+94 77 123 4567" value={number} onChange={(e) => setNumber(e.target.value)}
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 
+                                        focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
 
-                     
+                        {/* Order Items */}
+                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+                            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                <span className="bg-emerald-100 text-emerald-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">{cart.length}</span>
+                                Order Items
+                            </h2>
+                            <div className="space-y-4">
+                                
+                                {cart.map((item, index) => (
+                                    <div key={item.productId} className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-xl border border-gray-50 hover:bg-gray-50 transition-colors">
+                                        
+                                        <div className="w-20 h-20 shrink-0 bg-white rounded-lg overflow-hidden border border-gray-100">
+                                            <img src={item.img} alt={item.productName} className="w-full h-full object-contain p-1" />
+                                        </div>
+
+                                        <div className="flex-1 flex flex-col sm:flex-row justify-between w-full gap-4">
+                                            
+                                            <div className="flex flex-col">
+                                                <h3 className="text-md font-bold text-gray-900 line-clamp-1">{item.productName}</h3>
+                                                <p className="text-emerald-600 font-bold text-sm">Rs. {item.lablePrice.toLocaleString()}</p>
+                                            </div>
+
+                                            <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                                                {/* Qty Controls */}
+                                                <div className="flex items-center bg-white rounded-full border border-gray-200 shadow-sm">
+                                                    <button onClick={() => { addCart(item, -1); setCart(getCart()); }} className="w-8 h-8 flex items-center 
+                                                    justify-center text-gray-500 hover:text-emerald-600 rounded-l-full">
+                                                        <FaMinus className="text-[10px]" />
+                                                    </button>
+
+                                                    <span className="w-8 text-center font-bold text-sm">{item.qty}</span>
+                                                    <button onClick={() => { addCart(item, 1); setCart(getCart()); }} className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-emerald-600 rounded-r-full">
+                                                        <FaPlus className="text-[10px]" />
+                                                    </button>
+                                                </div>
+
+                                                <button onClick={() => { removeFromCart(item.productId); setCart(getCart()); }} className="text-red-400 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors">
+                                                    <FaTrashAlt />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div className="flex justify-between mt-6 text-lg">
-                        <span>Total</span>
-                        <span className="text-orange-500"></span>
+                    {/* Right Column: Order Summary */}
+                    <div className="w-full lg:w-[400px] shrink-0">
+                        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 sticky top-24">
+                            <h2 className="text-xl font-black text-gray-900 mb-6">Payment Summary</h2>
+
+                            <div className="space-y-4 mb-6">
+                                <div className="flex justify-between items-center text-gray-600 font-medium text-sm">
+                                    <span>Subtotal ({cart.reduce((sum, item) => sum + item.qty, 0)} items)</span>
+                                    <span className="text-gray-900">Rs. {getTotle().toLocaleString()}</span>
+                                </div>
+
+                                <div className="flex justify-between items-center text-gray-600 font-medium text-sm">
+                                    <span>Shipping Fee</span>
+                                    <span className="text-emerald-600 font-bold">Free</span>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-dashed border-gray-200 pt-6 mb-8">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-lg font-bold text-gray-800">Total</span>
+                                    <span className="text-3xl font-black text-emerald-600">
+                                        Rs. {getTotle().toLocaleString()}
+                                    </span>
+                                </div>
+                                <p className="text-xs text-gray-400 text-right mt-1">Inclusive of all taxes</p>
+                            </div>
+
+                            <button onClick={placeOrder} disabled={isPlacingOrder}
+                                className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-lg transition-all ${isPlacingOrder
+                                ? "bg-gray-400 text-white cursor-not-allowed"
+                                : "bg-emerald-600 text-white hover:bg-emerald-700 hover:shadow-lg hover:-translate-y-0.5"}`}>
+                                    <FaLock />
+                                    {isPlacingOrder ? "Processing..." : "Place Order"}
+                            </button>
+
+                            <div className="mt-6 text-center">
+                                <p className="text-xs text-gray-500"> By placing your order, you agree to our Terms of Service and Privacy Policy.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <button className="w-full mt-6 bg-orange-500 text-white py-3 rounded hover:bg-orange-600 font-semibold" onClick={
-                       placeOrder
-                    }>Place Order</button>
-                    
+                </div>
             </div>
-
-        </div>        
-</div>
-        
+        </div>
     )
 }
