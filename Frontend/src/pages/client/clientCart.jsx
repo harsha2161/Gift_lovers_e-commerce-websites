@@ -1,96 +1,178 @@
-import { useState } from "react"
-import { addCart, clearCart, getCart, removeFromCart ,getTotle} from "../../utils/cart"
-import { FaTrashAlt } from "react-icons/fa"
-import { Link } from "react-router-dom"
+import { useState } from "react";
+import { addCart, getCart, removeFromCart, getTotle } from "../../utils/cart";
+import { FaTrashAlt, FaShoppingCart, FaArrowRight, FaArrowLeft, FaMinus, FaPlus } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function ClientCart(){
-  
-    const [cart, setCart] = useState(getCart())
+export default function ClientCart() {
+  const [cart, setCart] = useState(getCart());
+  const navigate = useNavigate();
 
-    return(
-        <div className="w-full h-full flex justify-center items-center flex-row ">
-            <div className="w-[50%] h-full flex-col flex items-center overflow-auto">
-            {
-                cart.map(
-                    (item) => {
-                        return(
-                            
-                            <div key={item.productId} className="w-[600px] h-[100px] bg-primary shadow-2xl flex flex-row rounded-2xl m-2 flex items-center ove">
-                                <img src={item.img} alt="pic" className="w-[100px] h-[100px] rounded-2xl ojbect-cover"/>
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
 
-                                <div className="w-[300px] p-2 flex-col flex  font-bold">
-                                    <h1>{item.productName}</h1>
-                                    <h1>Rs: {item.lablePrice}</h1>
-                                </div>
-                                
-                                <div className="flex justify-center items-center"> 
-                                    <div className="bg-primary w-[120px] h-[45px] rounded-2xl shadow-lg flex items-center justify-between p-2">        
-                                        <button className="w-8 h-8 flex items-center justify-center bg-amber-200 hover:bg-amber-300 rounded-full text-lg font-bold transition" onClick={
-                                            () => {
-                                                addCart(item, 1)
-                                                setCart(getCart())
-                                            }
-                                        }>+</button>
-                                        <h1 className="text-lg font-semibold ">{item.qty}</h1>
-                                        <button className="w-8 h-8 flex items-center justify-center bg-amber-200 hover:bg-amber-300 rounded-full text-lg font-bold transition" onClick={
-                                            () => {
-                                                addCart(item, -1)
-                                                setCart(getCart())
-                                            }
-                                        }>-</button>
-                                    </div>
-                                </div>
-                                
-                                <h1 className="p-8">Price Rs: {item.qty * item.lablePrice}</h1>
-                                <button className=" hover:bg-red-600 rext-white rounded-full p-2" onClick={
-                                    () => {
-                                        removeFromCart(item.productId)
-                                        setCart(getCart())
-                                    }
-                                }><FaTrashAlt/></button>  
-
-                            </div>
-                            
-                        )
-                    }
-                )
-            }
-            
-            </div>
-
-          <div className="h-full w-[50%] flex justify-center items-center bg-gray-100">
-            <div className="w-[400px] bg-white shadow-2xl rounded-lg p-6">
-
-                    <h1 className="text-2xl font-semibold mb-6">Order Summary</h1>
-
-                    <div className="space-y-3 text-gray-600">
-                        <div className="flex justify-between">
-                            <span>Subtotal (0 items)</span>
-                            <span>Rs. {getTotle()}</span>
-                        </div>
-
-                        <div className="flex justify-between">
-                            <span>Shipping Fee</span>
-                            <span>Rs. 0</span>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-between mt-6 text-lg">
-                        <span>Total</span>
-                        <span className="text-orange-500">Rs. {getTotle()}</span>
-                    </div>
-                    <Link to="/checkout" state={
-                        {
-                            cart : cart
-                        }
-                        }><button className="w-full mt-6 bg-orange-500 text-white py-3 rounded hover:bg-orange-600 font-semibold">PROCEED TO CHECKOUT</button>
-                    
-                    </Link>
-                    
-            </div>
-
-        </div>        
-</div>
+  // Empty State
+  if (cart.length === 0) {
+    return (
+      <div className="min-h-[70vh] w-full flex flex-col justify-center items-center bg-gray-50 px-4">
         
+        <div className="bg-white p-8 rounded-full shadow-sm mb-6">
+          <FaShoppingCart className="text-6xl text-gray-300" />
+        </div>
+        <h2 className="text-3xl font-black text-gray-800 mb-2">Your cart is empty</h2>
+        <p className="text-gray-500 mb-8 text-center max-w-md">
+          Looks like you haven't added anything to your cart yet. Discover our latest products and find something you love!
+        </p>
+
+        <button onClick={() => navigate("/products")}
+        className="flex items-center gap-2 bg-emerald-600 text-white px-8 py-3 rounded-full font-bold 
+        hover:bg-emerald-700 hover:-translate-y-1 hover:shadow-lg transition-all">
+          <FaArrowLeft />
+          Continue Shopping
+        </button>
+      </div>
     )
+  }
+
+  return ( 
+    <div className="min-h-screen w-full bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-black text-gray-900">Shopping Cart</h1>
+          <p className="text-gray-500 mt-1">You have {totalItems} items in your cart</p>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-8">
+          
+          {/* Left Column: Cart Items */}
+          <div className="flex-1 flex flex-col gap-4">
+            {cart.map((item) => (
+              <div 
+                key={item.productId} 
+                className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 sm:p-6 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 transition-all hover:shadow-md"
+              >
+                {/* Image */}
+                <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-gray-50 rounded-xl overflow-hidden border border-gray-100">
+                  <img 
+                    src={item.img} 
+                    alt={item.productName} 
+                    className="w-full h-full object-contain p-2"
+                  />
+                </div>
+
+                {/* Details & Actions */}
+                <div className="flex-1 flex flex-col sm:flex-row justify-between w-full gap-4">
+                  
+                  {/* Info */}
+                  <div className="flex flex-col flex-1">
+                    <h2 className="text-lg font-bold text-gray-900 line-clamp-2 mb-1">
+                      {item.productName}
+                    </h2>
+                    <p className="text-emerald-600 font-bold mb-4">
+                      Rs. {item.lablePrice.toLocaleString()}
+                    </p>
+
+                    {/* Qty Controls */}
+                    <div className="mt-auto flex items-center w-fit bg-gray-50 rounded-full border border-gray-200">
+                      <button 
+                        onClick={() => {
+                          addCart(item, -1);
+                          setCart(getCart());
+                        }}
+                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-l-full transition-colors"
+                      >
+                        <FaMinus className="text-xs" />
+                      </button>
+                      <span className="w-10 text-center font-bold text-gray-800">
+                        {item.qty}
+                      </span>
+                      <button 
+                        onClick={() => {
+                          addCart(item, 1);
+                          setCart(getCart());
+                        }}
+                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-r-full transition-colors"
+                      >
+                        <FaPlus className="text-xs" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Price & Remove */}
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-between border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100 w-full sm:w-auto">
+                    <div className="text-right">
+                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Line Total</p>
+                      <p className="text-xl font-black text-gray-900">
+                        Rs. {(item.qty * item.lablePrice).toLocaleString()}
+                      </p>
+                    </div>
+                    
+                    <button 
+                      onClick={() => {
+                        removeFromCart(item.productId);
+                        setCart(getCart());
+                      }}
+                      className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors mt-0 sm:mt-auto"
+                    >
+                      <FaTrashAlt />
+                      <span className="sm:hidden">Remove</span>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Right Column: Order Summary */}
+          <div className="w-full lg:w-[400px] shrink-0">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 sticky top-24">
+              <h2 className="text-2xl font-black text-gray-900 mb-6">Order Summary</h2>
+
+              <div className="space-y-4 mb-6">
+                <div className="flex justify-between items-center text-gray-600 font-medium">
+                  <span>Subtotal ({totalItems} items)</span>
+                  <span className="text-gray-900">Rs. {getTotle().toLocaleString()}</span>
+                </div>
+                
+                <div className="flex justify-between items-center text-gray-600 font-medium">
+                  <span>Shipping Fee</span>
+                  <span className="text-emerald-600 font-bold">Free</span>
+                </div>
+              </div>
+
+              <div className="border-t border-gray-100 pt-6 mb-8">
+                <div className="flex justify-between items-end">
+                  <span className="text-lg font-bold text-gray-800">Total</span>
+                  <span className="text-3xl font-black text-emerald-600">
+                    Rs. {getTotle().toLocaleString()}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400 text-right mt-1">Inclusive of all taxes</p>
+              </div>
+
+              <Link 
+                to="/checkout" 
+                state={{ cart: cart }}
+                className="block w-full"
+              >
+                <button className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                  Proceed to Checkout
+                  <FaArrowRight />
+                </button>
+              </Link>
+
+              <div className="mt-6 flex items-center justify-center gap-4 text-gray-400">
+                 {/* Secure checkout badges placeholder text */}
+                 <span className="text-xs font-medium flex items-center gap-1">
+                   <FaShoppingCart /> Secure Checkout
+                 </span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
 }
