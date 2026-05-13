@@ -15,7 +15,6 @@ import ClientProductPage from "../pages/client/clientProduct";
 import ProductOverviewPage from "../pages/client/ProductOverview";
 import ClientCart from "../pages/client/clientCart";
 import ClientCheckout from "../pages/client/cllientCheckout";
-import ClientSearchProductPage from "../pages/client/clientSearchProducts";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/adminDashbourd";
@@ -122,10 +121,6 @@ export const router = createBrowserRouter([
       {
         path: "checkout",
         element: <ClientCheckout />
-      },
-      {
-        path: "search",
-        element: <ClientSearchProductPage />
       },
       {
         path: "*",
