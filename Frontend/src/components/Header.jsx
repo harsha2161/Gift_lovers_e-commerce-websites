@@ -1,166 +1,131 @@
-import { useState } from "react";
-import { FaShoppingCart, FaUserCircle, FaHeart, FaGift } from "react-icons/fa";
+import { useState, useEffect } from "react";
+import { FaShoppingCart } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { IoLogInOutline, IoLogOutOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
-  // MOCK STATE
-  const [isLoggedIn, setIsLoggedIn] = useState(true); 
-  const [cartCount, setCartCount] = useState(3); 
+  const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    setIsDrawerOpen(false);
-  };
+  // Add scroll listener for header styling
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="w-full shadow-md bg-white relative z-40 font-sans">
-      
-      {/* ================= TOP ACCENT BAR ================= */}
-      <div className="bg-gray-800 text-white text-xs md:text-sm w-full py-2 px-4 flex flex-col md:flex-row justify-between items-center text-center">
-        <p className="flex items-center gap-2 font-medium tracking-wide uppercase">
-          Free shipping on orders over $50!
-        </p>
-        <p className="hidden md:block opacity-90">Need help? Call us: 0765837107</p>
-      </div>
+    <header className={`w-full z-[100] font-sans transition-all duration-300 sticky top-0 
+    ${isScrolled ? "bg-white/90 backdrop-blur-lg shadow-md py-1" : "bg-white shadow-sm py-2"}`}>
 
-      {/* ================= MAIN HEADER CONTENT ================= */}
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-8 h-[85px]">
-        
+      <div className="max-w-7xl h-[35px] mx-auto flex items-center justify-between px-4  md:h-[50px] md:px-8 ">
+
         {/* Mobile Hamburger Menu */}
         <div className="md:hidden flex items-center">
-          <GiHamburgerMenu
-            className="text-3xl text-gray-800 cursor-pointer hover:text-green-600 transition-colors"
-            onClick={() => setIsDrawerOpen(true)}
-          />
+          <button onClick={() => setIsDrawerOpen(true)} className="p-2 -ml-2 rounded-xl hover:bg-emerald-50 text-gray-800 hover:text-emerald-600 transition-colors">
+            <GiHamburgerMenu className="text-2xl" />
+          </button>
         </div>
 
         {/* Logo */}
-        <div 
-          className="flex justify-center md:justify-start flex-1 md:flex-none cursor-pointer group" 
+        <div
+          className="absolute left-1/2 -translate-x-1/2 md:static md:transform-none flex justify-center md:justify-start cursor-pointer group"
           onClick={() => navigate("/")}
         >
-          <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight flex items-center gap-2 group-hover:scale-105 transition-transform">
-            Gift<span className="text-green-600">Lovers</span>
+          <h1 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight flex items-center">
+            Gift<span className="text-emerald-600">Lovers</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 mb-1 ml-1"></span>
           </h1>
         </div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          <Link to={"/"} className="font-semibold text-gray-700 hover:text-green-600 transition-colors">
-            Home
-          </Link>
-          <Link to={"/products"} className="font-semibold text-gray-700 hover:text-green-600 transition-colors">
-            Products
-          </Link>
-          <Link to={"/search"} className="font-semibold text-gray-700 hover:text-green-600 transition-colors">
-            Search
-          </Link>
-          <Link to={"/contacts"} className="font-semibold text-gray-700 hover:text-green-600 transition-colors">
-            Contact
-          </Link>
+        <nav className="hidden md:flex items-center gap-8 lg:gap-10">
+          {[
+            { name: "Home", path: "/" },
+            { name: "Products", path: "/products" },
+            { name: "Contact", path: "/contacts" },
+          ].map((link) => (
+            <Link
+              key={link.name}
+              to={link.path}
+              className={`text-[15px] font-semibold transition-all relative group py-2 ${isActive(link.path) ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"
+                }`}
+            >
+              {link.name}
+              <span className={`absolute bottom-0 left-0 w-full h-[2px] bg-emerald-500 transform origin-left transition-transform duration-300 ${isActive(link.path) ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"
+                }`}></span>
+            </Link>
+          ))}
         </nav>
 
         {/* Action Icons */}
-        <div className="flex items-center gap-4 md:gap-6">
-          
-          <Link to="/cart" className="relative text-gray-800 hover:text-green-600 transition-colors flex items-center">
-            <FaShoppingCart className="text-2xl" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-green-600 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+        <div className="flex items-center gap-2 md:gap-4">
 
-          {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-4 border-l pl-4 border-gray-200">
-            {isLoggedIn ? (
-              <>
-                <Link to="/profile" className="flex items-center gap-2 text-gray-700 hover:text-green-600 font-medium transition-colors">
-                  <FaUserCircle className="text-2xl text-green-500" />
-                  <span>Profile</span>
-                </Link>
-                <button 
-                  onClick={handleLogout}
-                  className="flex items-center gap-1 text-gray-400 hover:text-red-600 font-medium transition-colors"
-                >
-                  <IoLogOutOutline className="text-2xl" />
-                </button>
-              </>
-            ) : (
-              <Link to="/login" className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-full font-semibold transition-colors shadow-sm">
-                <IoLogInOutline className="text-xl" />
-                <span>Sign In</span>
-              </Link>
-            )}
-          </div>
+
+
+          <Link to="/cart" className="relative p-2.5 text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-all">
+            <FaShoppingCart className="text-[22px]" />
+
+          </Link>
         </div>
       </div>
 
       {/* ================= MOBILE SIDE DRAWER ================= */}
-      {isDrawerOpen && (
-        <div className="fixed inset-0 z-50 flex md:hidden">
-          <div 
-            className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity" 
-            onClick={() => setIsDrawerOpen(false)}
-          ></div>
+      <div className={`fixed inset-0 z-[110] flex md:hidden transition-opacity duration-300 ${isDrawerOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
+        <div
+          className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm"
+          onClick={() => setIsDrawerOpen(false)}
+        ></div>
 
-          <div className="relative w-[80%] max-w-[320px] h-full bg-white shadow-2xl flex flex-col">
-            
-            {/* Drawer Header */}
-            <div className="w-full h-[85px] border-b border-green-100 flex justify-between items-center px-6 bg-green-50">
-              <h2 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                Gift<span className="text-green-600">Lovers</span>
-              </h2>
-              <IoMdClose
-                className="text-3xl text-gray-800 cursor-pointer hover:text-green-600 transition-colors bg-white p-1 rounded-full shadow-sm"
-                onClick={() => setIsDrawerOpen(false)}
-              />
-            </div>
+        <div className={`relative w-[80%] max-w-[320px] h-full bg-white shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out ${isDrawerOpen ? "translate-x-0" : "-translate-x-full"}`}>
 
-            {/* Drawer Links */}
-            <nav className="flex flex-col flex-1 py-4 px-6 gap-2 overflow-y-auto">
-              <Link to="/" onClick={() => setIsDrawerOpen(false)} className="text-[18px] font-bold py-4 border-b border-gray-100 text-gray-700 hover:text-green-600">
-                Home
-              </Link>
-              <Link to="/occasions" onClick={() => setIsDrawerOpen(false)} className="text-[18px] font-bold py-4 border-b border-gray-100 text-gray-700 hover:text-green-600">
-                Shop Occasions
-              </Link>
-              <Link to="/bestsellers" onClick={() => setIsDrawerOpen(false)} className="text-[18px] font-bold py-4 border-b border-gray-100 text-gray-700 hover:text-green-600">
-                Best Sellers
-              </Link>
-              <Link to="/contacts" onClick={() => setIsDrawerOpen(false)} className="text-[18px] font-bold py-4 border-b border-gray-100 text-gray-700 hover:text-green-600">
-                Contact Us
-              </Link>
-
-              {/* Mobile Auth */}
-              <div className="mt-8 pt-4 border-t-2 border-dashed border-gray-200">
-                {isLoggedIn ? (
-                  <div className="flex flex-col gap-4">
-                    <Link to="/profile" onClick={() => setIsDrawerOpen(false)} className="flex items-center gap-3 text-[18px] font-bold text-gray-800 hover:text-green-600 bg-green-50 p-3 rounded-xl">
-                      <FaUserCircle className="text-2xl text-green-500" /> My Profile
-                    </Link>
-                    <button onClick={handleLogout} className="flex items-center gap-3 text-[18px] font-bold text-gray-500 hover:text-red-700 p-3">
-                      <IoLogOutOutline className="text-2xl" /> Logout
-                    </button>
-                  </div>
-                ) : (
-                  <Link to="/login" onClick={() => setIsDrawerOpen(false)} className="flex items-center justify-center gap-2 w-full bg-green-600 text-white py-3 rounded-full text-[18px] font-bold shadow-md hover:bg-green-700">
-                    <IoLogInOutline className="text-2xl" /> Sign In / Register
-                  </Link>
-                )}
-              </div>
-            </nav>
+          {/* Drawer Header */}
+          <div className="w-full h-[80px] border-b border-gray-100 flex justify-between items-center px-6 bg-white">
+            <h2 className="text-2xl font-black text-gray-900 flex items-center gap-1">
+              Gift<span className="text-emerald-600">Lovers</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 mb-1 ml-1"></span>
+            </h2>
+            <button
+              className="p-2 -mr-2 text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-full transition-colors"
+              onClick={() => setIsDrawerOpen(false)}
+            >
+              <IoMdClose className="text-2xl" />
+            </button>
           </div>
+
+          {/* Drawer Links */}
+          <nav className="flex flex-col flex-1 py-4 px-4 gap-1 overflow-y-auto">
+            {[
+              { name: "Home", path: "/" },
+              { name: "Products", path: "/products" },
+              { name: "Search", path: "/search" },
+              { name: "Contact Us", path: "/contacts" },
+            ].map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                onClick={() => setIsDrawerOpen(false)}
+                className={`text-[16px] font-semibold py-4 px-4 rounded-xl transition-colors ${isActive(link.path) ? "bg-emerald-50 text-emerald-600" : "text-gray-700 hover:bg-gray-50"
+                  }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
         </div>
-      )}
+      </div>
     </header>
   );
 }
