@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ProductsCard from "../../components/ProductsCards";
-import ProductSkeleton from "../../components/ProductSkeleton";
 import { FaSearch, FaSortAmountDown, FaSortAmountUp } from "react-icons/fa";
 import Loading from "../../components/loading";
 

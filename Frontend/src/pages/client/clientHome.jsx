@@ -2,7 +2,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductsCard from "../../components/ProductsCards";
-import ProductSkeleton from "../../components/ProductSkeleton";
 import { FaShippingFast, FaRegCreditCard, FaGem, } from "react-icons/fa";
 
 export default function ClientHomePage() {
