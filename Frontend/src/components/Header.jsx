@@ -48,7 +48,7 @@ export default function Header() {
           {/*Logo */}
           <div onClick={() => navigate("/")}
             className="">
-            <img src="logo.jpg" className="h-[50px] rounded-full " alt="logo" />
+            <img src="logo1.jpg" className="h-[50px] rounded-full " alt="logo" />
           </div>
 
           {/* Desktop Navigation */}
