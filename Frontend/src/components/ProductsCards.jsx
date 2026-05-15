@@ -3,9 +3,10 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export default function ProductsCard({ product }) {
 
-  const isOutOfStock = product.stoke <= 0
+  const isOutOfStock = product.stoke < 0
 
   return (
+    
     <Link to={"/overview/" + product.productId} className="group relative h-[360px] w-full max-w-[260px] bg-white rounded-2xl shadow-sm
     hover:shadow-xl hover:duration-300 mx-auto flex flex-col border border-gray-100">
       

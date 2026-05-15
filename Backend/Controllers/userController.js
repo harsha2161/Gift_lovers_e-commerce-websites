@@ -6,24 +6,7 @@ import axios from "axios";
 import { response } from "express";
 import nodemailer from 'nodemailer';
 
-
-
-
 export function createUser (req, res) {
-    // වෙනත් හෑශින් ක්‍රමයක්. සම්පූර්න කර නැත.
-    //dcript password hashing with manual solting
-    // const salt = crypto.randomBytes(16).toString('hex');
-    // const toHashing = password  + salt;
-
-    // const hashedpassword = crypto.createHash('sha256').update(toHashing).digest('hex');
-
-    //argon2i password hashing
-    // const hashPassword = argon2i.hash(req.body.password, {
-    //     type: argon2i.argon2id,
-    //     memoryCost : 2 ** 16,
-    //     timeCost : 3,
-    //     parallelism : 1,
-    // });
     
     const password = req.body.password
    
@@ -153,7 +136,6 @@ export function loginUser(req,res){
     const email = req.body.email
     const password = req.body.password
    
-
     user.findOne({email : email}).then(
         (user) => { 
           if(user == null){
@@ -164,12 +146,9 @@ export function loginUser(req,res){
             )
           }else{
             // bcript password cheking
-            
             const isPasswordCorrect = bcript.compareSync(password, user.password)
-            //console.log(isPasswordCorrect)
             if(isPasswordCorrect){
-                
-                
+              
                 const token = jwt.sign(
                     {
                         email : user.email,
@@ -178,7 +157,7 @@ export function loginUser(req,res){
                         role : user.role,
                         img : user.img,
                     },
-                    process.env.JWT_KEY   // encript user detials with this password and set token
+                    process.env.JWT_KEY 
                 )
                 res.json({
 

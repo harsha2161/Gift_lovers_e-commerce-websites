@@ -47,6 +47,7 @@ app.use(
 })
 
 const PORT = 5000;
+
 //conntect db and backend server
 mongoose.connect(process.env.MONGODB_URL)
   .then(() => {

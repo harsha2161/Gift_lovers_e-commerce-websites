@@ -4,12 +4,8 @@ import Header from "./Header";
 
 export default function PageLayout(){
  return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-bgcolor1">
       <Header />
-      
-      
-     
-
       <Footer />
     </div>
   )

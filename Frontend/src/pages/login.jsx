@@ -7,9 +7,12 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { useGoogleLogin } from "@react-oauth/google";
 
 export default function LogIn() {
+    
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const googleLogin = useGoogleLogin({
@@ -36,6 +39,7 @@ export default function LogIn() {
 
     async function handleLogin(e) {
         e.preventDefault();
+       
         if(!email || !password) {
             toast.error("Please fill in all fields");
             return;
@@ -47,6 +51,7 @@ export default function LogIn() {
                 email: email,
                 password: password,
             });
+            
             toast.success("Login Successful");
             localStorage.setItem("token", response.data.token);
 

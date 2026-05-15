@@ -54,7 +54,7 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 lg:gap-10">
             <Link to="/" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Home</Link>
-            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
+            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
             <Link to="/contacts" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/contacts") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Contact Us</Link>
           </nav>
 
@@ -88,7 +88,7 @@ export default function Header() {
 
           </div>
 
-          {/* Drawer Links */}
+    
           <nav className="flex flex-col flex-1 py-4 px-4 gap-2 ">
             <Link to="/" onClick={() => setIsDrawerOpen(false)} className={`text-[16px] font-semibold py-3 px-4 rounded-xl transition-colors ${isActive("/") ? "bg-emerald-50 text-emerald-600" : "text-gray-700 hover:bg-gray-50"}`}>Home</Link>
             <Link to="/products" onClick={() => setIsDrawerOpen(false)} className={`text-[16px] font-semibold py-3 px-4 rounded-xl transition-colors ${isActive("/products") ? "bg-emerald-50 text-emerald-600" : "text-gray-700 hover:bg-gray-50"}`}>Products</Link>

@@ -24,9 +24,8 @@ export async function createOrder(req,res){
     if(orderInfo.name == null){
         orderInfo.name = orderUser.firstName + " " + orderUser.lastName
     }
-    //ORD00001
-    var orderId = "ORD00001"
     
+    var orderId = "ORD00001"
     const lastOrder = await order.find().sort({date : -1}).limit(1)
 
     if(lastOrder.length >  0){
@@ -87,19 +86,18 @@ export async function createOrder(req,res){
         })
 
           
-                const createOrder = await Order.save()
-                res.json
-                    ({
-                        message : "order create successfull",
-                        order : createOrder
-                    })
+        const createOrder = await Order.save()
+            res.json
+                ({
+                    message : "order create successfull",
+                    order : createOrder
+                })
 
-    }catch(err){
-        res.status(500).json({
-             message : "order creation failed",
-             error : err
-        })
-       
+         }catch(err){
+            res.status(500).json({
+                message : "order creation failed",
+                error : err
+            })  
     }  
 }
 
@@ -111,7 +109,7 @@ export async function getOrder(req,res){
        })
        return
     }
-
+    
     try{
         if(req.user.role == "admin"){
             const orders = await order.find();

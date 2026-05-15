@@ -74,27 +74,19 @@ export default function ClientCart() {
 
                     {/* Qty Controls */}
                     <div className="mt-auto flex items-center w-fit bg-gray-50 rounded-full border border-gray-200">
-                      <button 
-                        onClick={() => {
-                          addCart(item, -1);
-                          setCart(getCart());
-                        }}
-                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-l-full transition-colors"
-                      >
+                     
+                      <button onClick={() => {addCart(item, -1); setCart(getCart()); }}
+                      className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-l-full transition-colors">
                         <FaMinus className="text-xs" />
                       </button>
-                      <span className="w-10 text-center font-bold text-gray-800">
-                        {item.qty}
-                      </span>
-                      <button 
-                        onClick={() => {
-                          addCart(item, 1);
-                          setCart(getCart());
-                        }}
-                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-r-full transition-colors"
-                      >
+
+                      <span className="w-10 text-center font-bold text-gray-800">{item.qty}</span>
+                      
+                      <button onClick={() => {addCart(item, 1); setCart(getCart()); }}
+                      className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-r-full transition-colors">
                         <FaPlus className="text-xs" />
                       </button>
+
                     </div>
                   </div>
 
@@ -102,18 +94,12 @@ export default function ClientCart() {
                   <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-between border-t sm:border-t-0 pt-4 sm:pt-0 border-gray-100 w-full sm:w-auto">
                     <div className="text-right">
                       <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">Line Total</p>
-                      <p className="text-xl font-black text-gray-900">
-                        Rs. {(item.qty * item.lablePrice).toLocaleString()}
-                      </p>
+                      <p className="text-xl font-black text-gray-900">Rs. {(item.qty * item.lablePrice).toLocaleString()}</p>
                     </div>
                     
                     <button 
-                      onClick={() => {
-                        removeFromCart(item.productId);
-                        setCart(getCart());
-                      }}
-                      className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors mt-0 sm:mt-auto"
-                    >
+                      onClick={() => { removeFromCart(item.productId); setCart(getCart());}}
+                      className="flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors mt-0 sm:mt-auto">
                       <FaTrashAlt />
                       <span className="sm:hidden">Remove</span>
                     </button>
@@ -151,23 +137,22 @@ export default function ClientCart() {
                 <p className="text-xs text-gray-400 text-right mt-1">Inclusive of all taxes</p>
               </div>
 
-              <Link 
-                to="/checkout" 
-                state={{ cart: cart }}
-                className="block w-full"
-              >
-                <button className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-emerald-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                  Proceed to Checkout
+              <Link  to="/payment" state={{ cart: cart }}className="block w-full">
+                <button className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white py-4 rounded-xl 
+                font-bold text-lg hover:bg-emerald-700 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                 Proceed to Checkout
                   <FaArrowRight />
                 </button>
               </Link>
 
               <div className="mt-6 flex items-center justify-center gap-4 text-gray-400">
-                 {/* Secure checkout badges placeholder text */}
+
                  <span className="text-xs font-medium flex items-center gap-1">
                    <FaShoppingCart /> Secure Checkout
                  </span>
+                 
               </div>
+
             </div>
           </div>
 

@@ -15,6 +15,7 @@ import ClientProductPage from "../pages/client/clientProduct";
 import ProductOverviewPage from "../pages/client/ProductOverview";
 import ClientCart from "../pages/client/clientCart";
 import ClientCheckout from "../pages/client/cllientCheckout";
+import ClientPayment from "../pages/client/clientPayment";
 
 // Admin Pages
 import AdminDashboard from "../pages/admin/adminDashbourd";
@@ -25,6 +26,9 @@ import { AdminUser } from "../pages/admin/adminUsers";
 import AddProductPage from "../pages/admin/addProductPage";
 import EditProductPage from "../pages/admin/editProductPage";
 import DeleteProduct from "../pages/admin/deleteProductPage";
+
+//states pages
+import PageNotFound from "../components/states/404 page not fount";
 
 export const router = createBrowserRouter([
   // Auth & Standalone routes
@@ -123,8 +127,12 @@ export const router = createBrowserRouter([
         element: <ClientCheckout />
       },
       {
+        path: "payment",
+        element: <ClientPayment />,
+      },
+      {
         path: "*",
-        element: <h1>404 not found</h1>
+        element: <PageNotFound/>
       }
     ]
   }
