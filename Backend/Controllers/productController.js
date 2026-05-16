@@ -33,13 +33,7 @@ try{
 //<-- view all products 
 export async function getProduct(req,res){
 
-    if(isAdmin(req)){
-        res.status(403).json({
-            massage : "you are not authorized to view products. please login admin account."
-        })
-         return
-    }
-
+   
     try{
         if(isAdmin(req)){
             const products = await product.find()
@@ -115,13 +109,6 @@ export async function updateProduct(req,res) {
 //<-- view products by id
 export async function getProductById(req,res){
     
-    if(!isAdmin(req)){
-        res.status(403).json({
-            massage : "you are not authorized to view product. please login admin account."
-        })
-         return
-    }
-
     const productId = req.params.productId
 
     try{
