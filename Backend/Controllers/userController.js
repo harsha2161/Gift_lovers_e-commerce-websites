@@ -237,47 +237,16 @@ export function isAdmin(req){
     }
 }
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 587, // 465 වෙනුවට 587 භාවිතා කරන්න
-  secure: false, // 587 port එක පාවිච්චි කරන නිසා මේක false වෙන්න ඕනේ
-  requireTLS: true, // TLS connection එකක් අනිවාර්ය කරන්න
-  auth: {
-    user: process.env.EMAIL_USER || "prabhathharsha77@gmail.com", 
-    pass: process.env.EMAIL_PASS || "YOUR_NEW_APP_PASSWORD", // Store this in a .env file!
-  },
-  connectionTimeout: 10000, 
-  greetingTimeout: 10000,
-  socketTimeout: 10000
-});
+export function getUser(req,res){
 
-export async function sentOTP(req, res) {
-    const randomOTP = Math.floor(100000 + Math.random() * 900000);    
-
-    // Check if email exists in the request body
-   
-
-    const message = {
-        from: "prabhathharsha77@gmail.com", // BUG FIX: Added the missing '@'
-        to: req.body.email,
-        subject: "Resetting password for giftlovers.com",
-        text: "This is your password reset OTP : " + randomOTP
-    };
-
-    transporter.sendMail(message, (error, info) => {
-        if (error) {
-            console.error("Email sending error:", error);
-            return res.status(500).json({
-                message: "Failed to send OTP",
-                error: error.message
-            });
-        } else {
-            // NOTE: Store `randomOTP` in your database here linked to the user's email.
-            // Do NOT send the actual OTP back in this JSON response in a production app.
-            return res.status(200).json({
-                message: "OTP sent successfully"
-                // otp: randomOTP <-- Remove this for actual security
-            });
-        }
-    });
+    if(req.user == null){
+        res.status(403).json({
+            message : " user not found"
+        })
+        return
+    }else{
+        res.json({
+            ...req.user
+        })
+    }
 }
