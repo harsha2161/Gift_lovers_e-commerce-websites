@@ -57,7 +57,7 @@ export async function createOrder(req,res){
                 return
             }
             const currentQuantity = orderInfo.orderProducts[i].quantity;
-
+            
             products[i] = {
                 productInfo : {
                     productId : item.productId,
@@ -109,7 +109,7 @@ export async function getOrder(req,res){
        })
        return
     }
-    
+
     try{
         if(req.user.role == "admin"){
             const orders = await order.find();
