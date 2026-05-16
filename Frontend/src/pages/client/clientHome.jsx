@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ProductsCard from "../../components/ProductsCards";
 import { FaShippingFast, FaRegCreditCard, FaGem, } from "react-icons/fa";
+import Loading from "../../components/loading";
 
 export default function ClientHomePage() {
 
@@ -25,6 +26,7 @@ export default function ClientHomePage() {
   }, [slides.length]);
 
   useEffect(() => {
+
     if (isLoading) {
       axios.get(import.meta.env.VITE_BACKEND_URL + "/api/product/").then(
         (res) => {
@@ -55,51 +57,51 @@ export default function ClientHomePage() {
 
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-50 px-4 text-center">
-          <span className="text-emerald-300 font-semibold text-sm mb-4">Curated With Care</span>
+            <span className="text-emerald-300 font-semibold text-sm mb-4">Curated With Care</span>
 
-          <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-xl">Show your love <br /> with perfect gifts.</h1>
-          <p className="text-lg md:text-2xl mb-10 max-w-2xl text-gray-200 drop-shadow-md">Discover our beautiful collection of meaningful gifts,
+            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight drop-shadow-xl">Show your love <br /> with perfect gifts.</h1>
+          
+            <p className="text-lg md:text-2xl mb-10 max-w-2xl text-gray-200 drop-shadow-md">Discover our beautiful collection of meaningful gifts,
             lovingly crafted to express your deepest affection.</p>
 
-          <Link to="/products" className="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full hover:scale-105 
-          transition-all duration-200 text-lg">
+            <Link to="/products" className="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-full hover:scale-105 
+            transition-all duration-200 text-lg">
             Shop Now
-          </Link>
-
+            </Link>
         </div>
 
 
-      </div>
+        </div>
 
       <div className="w-full bg-white py-16 px-6 border-b border-gray-100 relative z-30 -mt-8 rounded-t-[3rem] shadow-bgcolor2 ">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
 
-          <div className="flex flex-col items-center p-6">
-            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
-              <FaShippingFast size={28} />
+            <div className="flex flex-col items-center p-6">
+                <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
+                  <FaShippingFast size={28} />
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Fast Delivery</h3>
+                <p className="text-gray-500">Express shipping options to get your gifts delivered exactly when you need them.</p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Fast Delivery</h3>
-            <p className="text-gray-500">Express shipping options to get your gifts delivered exactly when you need them.</p>
-          </div>
 
-          <div className="flex flex-col items-center p-6">
-            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
-              <FaGem size={28} />
+            <div className="flex flex-col items-center p-6">
+              <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
+                <FaGem size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Premium Quality</h3>
+              <p className="text-gray-500">Every item is handpicked to ensure the highest quality standards for your loved ones.</p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Premium Quality</h3>
-            <p className="text-gray-500">Every item is handpicked to ensure the highest quality standards for your loved ones.</p>
-          </div>
 
-          <div className="flex flex-col items-center p-6">
-            <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
-              <FaRegCreditCard size={28} />
+            <div className="flex flex-col items-center p-6">
+              <div className="w-16 h-16 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-6 shadow-sm">
+                <FaRegCreditCard size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">Secure Payments</h3>
+              <p className="text-gray-500">Your transactions are encrypted and 100% secure with multiple payment gateways.</p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">Secure Payments</h3>
-            <p className="text-gray-500">Your transactions are encrypted and 100% secure with multiple payment gateways.</p>
-          </div>
 
+          </div>
         </div>
-      </div>
 
       <div className="w-full py-24 px-6 md:px-12 lg:px-24">
         <div className="max-w-7xl mx-auto">
@@ -115,7 +117,7 @@ export default function ClientHomePage() {
 
             <Link to="/products" className="mt-6 md:mt-0 px-6 py-3 border-2 border-emerald-600 text-emerald-600 
             font-semibold rounded-xl hover:bg-emerald-600 hover:text-white transition-colors duration-300">
-              View All Products
+            View All Products
             </Link>
           </div>
 
@@ -123,8 +125,8 @@ export default function ClientHomePage() {
 
             {isLoading ? (
 
-              <div>
-
+              <div className="absolute">
+                <Loading/>
               </div>
 
             ) : products.length > 0 ? (

@@ -12,8 +12,10 @@ export default function ProductOverviewPage() {
 
   const params = useParams();
   const productId = params.id;
+
   const [status, setStatus] = useState("loading");
   const [product, setProduct] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,12 +28,12 @@ export default function ProductOverviewPage() {
 
       }).catch((error) => {
 
-        console.error(error);
+       // console.error(error);
         setStatus("error");
         toast.error("Error fetching product details");
       })
 
-  }, [productId]);
+  }, [setStatus]);
 
   if (status === "loading") {
     return <Loading />;
@@ -132,17 +134,16 @@ export default function ProductOverviewPage() {
 
             </button>
 
-            <button onClick={() => {
-              navigate("/checkout", {
-                state: {
-                  cart: [{
-                    productId: product.productId,
-                    productName: product.productName,
-                    img: product.img[0],
-                    lablePrice: product.lablePrice,
-                    qty: 1,
-                  }]
-                }
+            <button onClick={() => { navigate("/checkout", {
+                  state: {
+                    cart: [{
+                      productId: product.productId,
+                      productName: product.productName,
+                      img: product.img[0],
+                      lablePrice: product.lablePrice,
+                      qty: 1,
+                    }]
+                  }
               });
             }}
               className="flex-1 flex justify-center items-center gap-2 bg-emerald-600 text-white px-8 py-4 
