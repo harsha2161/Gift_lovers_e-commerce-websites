@@ -26,6 +26,7 @@ export default function ClientProductPage() {
 
   const filteredProducts = products.filter((product) => {
       if (!query) return true;
+
       const searchLower = query.toLowerCase();
       return (
         product.productName?.toLowerCase().includes(searchLower) ||
@@ -91,11 +92,11 @@ export default function ClientProductPage() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 xl:gap-8 place-items-center">
           {isLoading ? (
-           <div>
-            
+           <div className="absolute top-60">
+              <Loading/>
            </div>
           ) : filteredProducts.length > 0 ? (
-            filteredProducts.map((item) => (
+              filteredProducts.map((item) => (
               <ProductsCard key={item.productId} product={item} />
             ))
           ) : (
