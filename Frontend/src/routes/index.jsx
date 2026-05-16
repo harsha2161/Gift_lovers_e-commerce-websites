@@ -29,6 +29,7 @@ import DeleteProduct from "../pages/admin/deleteProductPage";
 
 //states pages
 import PageNotFound from "../components/states/404 page not fount";
+import ClientProfile from "../pages/client/clientProfile";
 
 export const router = createBrowserRouter([
   // Auth & Standalone routes
@@ -129,6 +130,9 @@ export const router = createBrowserRouter([
       {
         path: "payment",
         element: <ClientPayment />,
+      },
+      { path: "profile",
+        element: <ClientProfile/>
       },
       {
         path: "*",

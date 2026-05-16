@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaShoppingCart, FaSign } from "react-icons/fa";
+import { FaShoppingCart, FaSign, FaUser } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
 import { IoLogIn, IoLogOut } from "react-icons/io5";
@@ -11,7 +11,6 @@ export default function Header() {
   const location = useLocation();
 
   const token = localStorage.getItem("token")
-
 
   const navigate = useNavigate();
 
@@ -58,44 +57,56 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 lg:gap-10">
             <Link to="/" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Home</Link>
-            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
+            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
             <Link to="/contacts" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/contacts") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Contact Us</Link>
           </nav>
 
-        <div className="flex justify-center items-center gap-1">
+          <div className="flex justify-center items-center">
           {/* cart Icons */}
           <div className="flex items-center ">
-            <Link to="/cart" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 hidden md:flex justify-center items-center flex-col ">
+            <Link to="/cart" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
               <FaShoppingCart className="text-[25px]" />
               cart
             </Link>
           </div>
 
-          {
+        {
           token == null ? (
             <div className="flex items-center ">
-              <Link to="/login" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
+              <Link to="/login" className="relative p-3 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
                 <IoLogIn className="text-[30px]" />
                 Login
               </Link>   
-            </div>    
-                          ):(
-          <button onClick={()=>{
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
-          }}>
-            <div className="flex items-center ">
-              <Link to="/" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
-                <IoLogOut className="text-[27px]" />
-                Logout
-              </Link>
-            </div> 
-          </button>
+            </div>  
+
+            ):(
+
+            <div className="flex ml-25 flex justify-center items-center">
+                <button onClick={()=>{
+                  localStorage.removeItem("token")
+                  localStorage.removeItem("user")
+                }}>
+                  
+                  <div className="flex items-center ">
+                    <Link to="/" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
+                      <IoLogOut className="text-[27px]" />
+                      <p>Logout</p>
+
+                    </Link>
+                  </div> 
+                </button>
+                    <Link to="/profile" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
+                      <FaUser className="text-[27px]" />
+                      <p>Profile</p>
+
+                    </Link>
+
+            </div>
+   
           )
           }
-          
 
-        </div>
+      </div>
 
           
         </div>

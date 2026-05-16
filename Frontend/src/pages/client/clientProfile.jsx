@@ -1,10 +1,10 @@
+import Loading from "../../components/loading";
+
 export default function ClientProfile(){
-    
-    const userData = localStorage("user", )
-    
     return(
         <div>
-            
+            <h1>profile coming soon....</h1>
+            <Loading/>
         </div>
     )
 }
