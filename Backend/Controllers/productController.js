@@ -1,23 +1,19 @@
 import product from "../models/product.js";
 import { isAdmin } from "./userController.js";
 
+//<-- save products
 export async function saveProduct(req,res){
 
     if(!isAdmin(req)){
         res.status(403).json({
-            massage : "you are not authorized to add a products"
+            massage : "you are not authorized to add product. please login admin account."
         })
          return
     }
 
-    const Product = new product(
-        //{
-        // name : req.body.name,
-        // id : req.body.id,
-        // price : req.body.price,  
-        //}
-        req.body // මොඩෙල් එකේ සියල්ල ඇඩ කර ඇත මේ කෝඩ් එකෙන් ඒක කෙලින්ම ඇඩ් කල හැක.
-    );
+    const Product = new product(    
+        req.body 
+    )
  
 try{
     const product = await Product.save()
@@ -28,15 +24,22 @@ try{
     }catch(err){
         res.json(
             {
-            message : "product add fails",
-            error : err  // err යනු පැරමීටර් නමක් වන අතර එය විශේශිත නමක් නොවේ. ෆන්ශ්ස්න් එකේ වීදිහ අනුව එය ඔටෝම සෑදී ඇත. අලුතෙන් සෑදීමට අවශ්‍ය නොවේ.
+            message : "product add failed."+err
             }
         )
     }
 }
 
-//<-- view all 
+//<-- view all products 
 export async function getProduct(req,res){
+
+    if(isAdmin(req)){
+        res.status(403).json({
+            massage : "you are not authorized to view products. please login admin account."
+        })
+         return
+    }
+
     try{
         if(isAdmin(req)){
             const products = await product.find()
@@ -50,56 +53,50 @@ export async function getProduct(req,res){
     }catch(err){
         res.json(
             {
-                message : "product view  failed",
-                error : err
+                message : "product view failed"+ err,
             }
         )
    }
 }
-// වෙනත් ලොකු ප්‍රොජෙක්ට් වල දී ඩිලිටඩ් වල true false kirmima pamanak karai
 
+//<-- delete products
 export async function deleteProduct(req,res){
     
-    if(!isAdmin){
+    if(!isAdmin(req)){
         res.status(403).json({
-        message : "you are not authorized to delete product"
-    })
-    return
+            massage : "you are not authorized to delete product. please login admin account."
+        })
+         return
     }
 
     try{
-
-        await product.deleteOne({productId : req.params.productId}) // paramas ==>>> url eken ewana parameter eka bhawitha kirimaat bhawotha karana standed kramamya we....  >>>
-        res.json({
-            message : "product delete successfully",
-
-                })
-
+        await product.deleteOne({productId : req.params.productId})
+            res.json({
+                message : "product delete successfully",
+            })
     }catch(err){
-        res.json({
-            message : "delete fails",
-            error : err,
+        res.status(500).json({
+            message : "product delete failed" +err,
 
-                 }
-        )
-    }   
-}
+            })
+    }  
+} 
 
 
+//<-- update produts
 export async function updateProduct(req,res) {
 
-    if(!isAdmin){
+    if(!isAdmin(req)){
         res.status(403).json({
-            message : "are you not a admin"
+            massage : "you are not authorized to update product. please login admin account."
         })
-        return 
+         return
     }
 
     const productId = req.params.productId
     const updatingData = req.body
 
-    try{
-        
+    try{  
         await product.updateOne(
             {productId : productId},updatingData
         )
@@ -110,19 +107,24 @@ export async function updateProduct(req,res) {
         
     }catch(err){
         res.status(500).json({
-            message : "internal server error",
-            error : err,
-            }
-         )
+            message : "produts update failed"+ err,
+            })
     }
 }
 
+//<-- view products by id
 export async function getProductById(req,res){
+    
+    if(!isAdmin(req)){
+        res.status(403).json({
+            massage : "you are not authorized to view product. please login admin account."
+        })
+         return
+    }
 
     const productId = req.params.productId
 
     try{
-
         const Product = await product.findOne({productId : productId})
 
         if(Product == null){
@@ -155,52 +157,8 @@ export async function getProductById(req,res){
         })
     }
 }
- // ඔබගේ model එක import කිරීමට වග බලා ගන්න
 
-export async function addReview(req, res) {
-    const reviewUser = req.user;
-    const reviewInfo = req.body; 
-    const productId = req.params.productId;
-
-    // 1. User, admin කෙනෙක් දැයි පරීක්ෂා කිරීම
-    if (reviewUser && reviewUser.role === "admin") {
-        return res.status(403).json({  // 403 Forbidden ලෙස වෙනස් කරන ලදි
-            message: "Admins can't add a review for a product",
-        });
-    }
-
-    // 2. Body එක හිස් දැයි පරීක්ෂා කිරීම
-    if (!reviewInfo || Object.keys(reviewInfo).length === 0) {
-        return res.status(400).json({  // 400 Bad Request ලෙස වෙනස් කරන ලදි
-            message: "Cannot add empty reviews. Please add review contents.",
-        });
-    }
-
-    try {
-        // 3. ✅ නිවැරදි කරන ලදි: array එකට review එක එක් කිරීමට $push භාවිතා කරන්න
-        const updatedProduct = await product.updateOne(
-            { productId: productId },
-            { $push: { review: { reviewInfo: reviewInfo } } } // Schema එකට ගැළපෙන පරිදි සකසා ඇත
-        );
-
-        // Product එක ඇත්තටම සොයාගෙන update කළේදැයි පරීක්ෂා කිරීම
-        if (updatedProduct.matchedCount === 0) {
-            return res.status(404).json({ message: "Product not found" });
-        }
-
-        return res.json({
-            message: "Product reviews updated successfully"
-        });
-
-    } catch (err) {
-        console.error("Review Error:", err);
-        return res.status(500).json({
-            message: "Internal server error",
-            error: err.message,
-        });
-    }
-}
-
+//<-- search products
 export async function searchProducts(req, res){
 
     const searchQuery = req.params.query
