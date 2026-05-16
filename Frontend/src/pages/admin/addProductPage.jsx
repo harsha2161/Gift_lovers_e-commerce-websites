@@ -52,8 +52,7 @@ export default function AddProductPage() {
         lablePrice: lablePrice,
       };
       // call to back end with product detiles json attact to sent backend
-      axios
-        .post(import.meta.env.VITE_BACKEND_URL + "/api/product/addProduct", products, {
+      axios.post(import.meta.env.VITE_BACKEND_URL + "/api/product/addProduct", products, {
           headers: {
             Authorization: "Bearer " + token, // added Bearer word to token, there  for need to back end try remove to Bearer word
           },

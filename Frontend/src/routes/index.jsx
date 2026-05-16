@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
         element: <AddProductPage />
       },
       {
-        path: "editProdute", // Intentionally keeping the typo to match existing links if any
+        path: "editProdute", 
         element: <EditProductPage />
       },
       {

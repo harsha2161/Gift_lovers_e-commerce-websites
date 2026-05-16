@@ -53,8 +53,7 @@ export function AdminOrder() {
         return;
       }
 
-      axios
-        .get(import.meta.env.VITE_BACKEND_URL + "/api/order/", {
+      axios.get(import.meta.env.VITE_BACKEND_URL + "/api/order/", {
           headers: { Authorization: "Bearer " + token },
         })
         .then((res) => {
