@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FaTrashAlt, FaLock, FaArrowLeft, FaMapMarkerAlt, FaPhoneAlt, FaMinus, FaPlus, FaCreditCard, FaPaypal, FaCcPaypal, FaCarCrash, FaMoneyBill } from "react-icons/fa";
+import { FaTrashAlt, FaLock, FaArrowLeft, FaMapMarkerAlt, FaPhoneAlt, FaMinus, FaPlus, FaCreditCard, FaPaypal, FaCcPaypal, FaCarCrash, FaMoneyBill, FaEdit } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
@@ -8,8 +8,8 @@ import { getCart, removeFromCart, addCart, clearCart, getTotle } from "../../uti
 export default function ClientPayment() {
 
     const location = useLocation();
-    const [address, setAddress] = useState(location.state?.address || "");
-    const [number, setNumber] = useState(location.state?.number || "");
+    const [address, setAddress] = useState(location.state?.address);
+    const [number, setNumber] = useState(location.state?.number);
     const navigate = useNavigate();
 
     // Get cart data from Product Overview (Buy Now) or fallback to global Cart
@@ -92,9 +92,9 @@ export default function ClientPayment() {
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <FaMapMarkerAlt className="text-gray-400" />
                                         </div>
-                                        <input type="text" placeholder="123 Main St, Apartment 4B" value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
-                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 
+
+                                        <input disabled type="text" placeholder={address} 
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 
                                         text-gray-800 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
                                     </div>
 
@@ -107,11 +107,16 @@ export default function ClientPayment() {
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <FaPhoneAlt className="text-gray-400" />
                                         </div>
-                                        <input type="tel" placeholder="+94 77 123 4567" value={number} onChange={(e) => setNumber(e.target.value)}
-                                            className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 
+
+                                        <input disabled type="tel" placeholder={number} 
+                                        className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 
                                         focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
                                     </div>
 
+                                    
+                                    <button className="mt-5 p-2 bg-emerald-600  rounded-2xl pl-4 pr-4 font-bold hover:bg-bgcolor2"
+                                    onClick={()=>{navigate("/checkout")}}>Back to Edit</button>
+                                    
                                 </div>
                             </div>
                         </div>

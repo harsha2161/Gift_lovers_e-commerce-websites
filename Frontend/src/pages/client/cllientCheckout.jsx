@@ -45,7 +45,7 @@ export default function ClientCheckout() {
 
     async function placeOrder() {
 
-        if (address == null || number == null) {
+        if (address == "" || number == "") {
             toast.error("Please fill in your shipping details.");
             return;
         }
@@ -53,6 +53,7 @@ export default function ClientCheckout() {
         const token = localStorage.getItem("token");
         if (!token) {
             toast.error("Please login to place order.");
+            navigate("/login")
             return;
         }
 
@@ -95,7 +96,7 @@ export default function ClientCheckout() {
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <FaMapMarkerAlt className="text-gray-400" />
                                         </div>
-                                        <input type="text" placeholder="123 Main St, Apartment 4B" value={address}
+                                        <input required type="text" placeholder="123 Main St, Apartment 4B" value={address}
                                             onChange={(e) => setAddress(e.target.value)}
                                             className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 
                                         text-gray-800 focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
@@ -110,7 +111,7 @@ export default function ClientCheckout() {
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <FaPhoneAlt className="text-gray-400" />
                                         </div>
-                                        <input type="tel" placeholder="+94 77 123 4567" value={number} onChange={(e) => setNumber(e.target.value)}
+                                        <input required type="tel" placeholder="+94 77 123 4567" value={number} onChange={(e) => setNumber(e.target.value)}
                                             className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-800 
                                         focus:bg-white focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition-all"/>
                                     </div>
