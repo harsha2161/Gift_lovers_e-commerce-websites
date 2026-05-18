@@ -1,4 +1,6 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
+  
 import { FaShoppingCart, FaSign, FaUser } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoMdClose } from "react-icons/io";
@@ -8,11 +10,25 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState("");
+
+  const navigate = useNavigate()
+
   const location = useLocation();
 
   const token = localStorage.getItem("token")
 
-  const navigate = useNavigate();
+  useEffect(()=>{
+    axios.get(import.meta.env.VITE_BACKEND_URL+"/api/users/getuser",{
+      headers : {
+        Authorization : `Bearer ${token}`
+      }
+    }).then((response) => {
+      setUser(response.data)
+    }
+  )
+
+  },[])
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -57,7 +73,7 @@ export default function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8 lg:gap-10">
             <Link to="/" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Home</Link>
-            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
+            <Link to="/products" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/products") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Products</Link>
             <Link to="/contacts" className={`text-[15px] font-semibold transition-colors py-2 ${isActive("/contacts") ? "text-emerald-600" : "text-gray-600 hover:text-emerald-600"}`}>Contact Us</Link>
           </nav>
 
@@ -95,11 +111,16 @@ export default function Header() {
                     </Link>
                   </div> 
                 </button>
-                    <Link to="/profile" className="relative p-2.5 text-gray-600 hover:text-bgcolor2 flex justify-center items-center flex-col">
-                      <FaUser className="text-[27px]" />
-                      <p>Profile</p>
-
-                    </Link>
+                
+                <button 
+                         onClick={() => {
+                          navigate("/profile",{
+                              state: user,
+                            })
+                  }}>
+                  <img src={user.img} alt="profile pic" className="rounded-full object-cover h-13 border-3 shadow" />
+                     
+                </button>
 
             </div>
    
